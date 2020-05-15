@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:autocomplete="clr-namespace:Syncfusion.SfAutoComplete.XForms;assembly=Syncfusion.SfAutoComplete.XForms"
+             xmlns:behaviorPack="clr-namespace:Xamarin.Forms.BehaviorsPack;assembly=Xamarin.Forms.BehaviorsPack"
+             mc:Ignorable="d"
+             x:Class="Marios.MainPage"
+             Title="Nintendo">
+
+    <Grid>
+
+    <StackLayout>
+        <!--<SearchBar Placeholder="Buscar un Amiibo"
+                   SearchCommand="{Binding SearchCommand}"
+                   x:Name="search"
+                   SearchCommandParameter="{Binding Text, Source={x:Reference search}}"/>-->
+                   <!--aqui le indico que search usa su propia referencia para auto buscar-->
+        <autocomplete:SfAutoComplete HeightRequest="40"
+                                     DataSource="{Binding Characterslista}"
+                                     DisplayMemberPath="name"
+                                     Watermark="Busca un Personaje">
+            <autocomplete:SfAutoComplete.Behaviors>
+                <!--se agrega solo con solo escribir-->
+                <behaviorPack:EventToCommandBehavior
+                    EventName="SelectionChanged"
+                    Command="{Binding SearchCommand}"
+                    EventArgsPropertyPath="Value"/>
+            </autocomplete:SfAutoComplete.Behaviors>
+                
+        </autocomplete:SfAutoComplete>
+        <ListView ItemsSource="{Binding AmmibosList}"
+                  RowHeight="250"
+                  HasUnevenRows="True"
+                  x:Name="listamario"
+                  SelectionMode="None"
+                  >
+
+                    <!--personalizar-->
+            <ListView.ItemTemplate>
+                
+                <DataTemplate >
+                    <!--los view cell tienen eventos-->
+                    <ViewCell Appearing="ViewCell_Appearing" >
+                        <Frame CornerRadius="5"
+                               Margin="5"
+                               BackgroundColor="White">
+                            <StackLayout Padding="10">
+                                <Image Source="{Binding image}"
+                                       HeightRequest="100"></Image>
+                                <Label Text="{Binding name}" FontSize="Large"/>
+                                <Label Text="{Binding amiiboSeries, StringFormat='Amiibo Series: {0}'}"/>
+                                <Label Text="{Binding gameSeries, StringFormat='Game Series: {0}'}"/>
+                                <Label Text="{Binding type, StringFormat='Type: {0}'}"/>
+                            </StackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+        <Grid Opacity=".7" BackgroundColor="Black" IsVisible="{Binding IsBusy}">
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               HorizontalOptions="Center"></ActivityIndicator>
+        </Grid>
+    </Grid>
+</ContentPage>
